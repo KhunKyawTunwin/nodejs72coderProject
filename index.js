@@ -167,7 +167,7 @@ server.listen(3000, () => {
 }); */
 
 // lesson 37 Dot Env Usage
-
+/* 
 let http = require("http");
 let url = require("url");
 require("dotenv").config();
@@ -220,12 +220,78 @@ let start = (req, res) => {
 let server = http.createServer(start);
 
 server.listen(process.env.PORT, () => {
-  console.log(`Running new port ${process.env.PORT}!`);
+  console.log(`Running new server port ${process.env.PORT}!`);
 });
-
+ */
 // lesson 38 Ghit hub
 
 // Lesson 39 Getting post UrlEncoded Values
+
+let http = require("http");
+let url = require("url");
+let qsData = require("querystring");
+require("dotenv").config();
+
+let responder = (req, res, params) => {
+  res.writeHead(200, { "Content-Type": "Text/html" });
+  res.end(params);
+};
+
+let routes = {
+  GET: {
+    "/": (req, res) => {
+      responder(req, res, `<h1>Get Method => / route</h1>`);
+    },
+    "/home": (req, res) => {
+      responder(
+        req,
+        res,
+        ` <h3>Get Method =>/home route route with  ${query.name} and ${query.age}</h3>`
+      );
+    },
+  },
+
+  POST: {
+    "/": (req, res) => {
+      responder(req, res, `<h3>Post Method =>/ route</h3>`);
+    },
+    "/api/login": (req, res) => {
+      let body = "";
+      req.on("data", (data) => {
+        body += data;
+      });
+      req.on("end", () => {
+        let data = qsData.parse(body);
+        console.log(data);
+        res.end();
+      });
+    },
+  },
+  NA: (req, res) => {
+    responder(req, res, `<h1>No Page for that route!</h1>`);
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let params = url.parse(req.url, true); //<= second para is for String
+  // let name = query.name;
+  // let age = query.age;
+  // console.log("Name :", name, "Age :", age);
+
+  let resolveRoute = routes[reqMethod][params.pathname];
+  if (resolveRoute != null && resolveRoute != undefined) {
+    resolveRoute(req, res);
+  } else {
+    routes["NA"](req, res);
+  }
+};
+
+let server = http.createServer(start);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Running new server port ${process.env.PORT}!`);
+});
 
 // const express = require("express");
 // const app = express();
