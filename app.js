@@ -1,3 +1,38 @@
+/* exports.hello = (user) => {
+  return "Hell Mr Khun " + user + "." + help.ending();
+};
+
+let help = require("./brainTest/helper");
+ */
+
+// Lessson 47 password encode
+/* 
+let encode = (plainPass) => {
+  return new Promise((resovle, reject) => {
+    require("bcrypt").genSalt(10, (err, salt) => {
+      require("bcrypt").hash(plainPass, salt, (err, hash) => {
+        if (err) reject(err);
+        resovle(hash);
+      });
+    });
+  });
+};
+
+let compare = (plainPass, hashpass) => {
+  return new Promise((resovle, reject) => {
+    require("bcrypt").compare(plainPass, hashpass, (err, bool) => {
+      if (err) reject(err);
+      resovle(bool);
+    });
+  });
+};
+
+module.exports = {
+  encode,
+  compare,
+};
+ */
+
 // File Handling Asynchronously
 
 // let fs = require("fs");
@@ -261,3 +296,756 @@ let server = http.createServer(function (req, res) {
 
 server.listen(3000);
  */
+
+/* let http = require("http");
+let url = require("url");
+let qs = require("querystring");
+let fs = require("fs");
+let path = require("path");
+const { resolve } = require("path");
+const { rejects } = require("assert");
+const { Router } = require("express");
+require("dotenv").config();
+
+meme = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/git",
+};
+
+let checkFileExits = (fpath) => {
+  return new Promise((resolve, rejects) => {
+    fs.access(fpath, fs.F_OK, (err) => {
+      if (err) rejects(err);
+      resolve(fpath);
+    });
+  });
+};
+
+let readMyFile = (fpath) => {
+  return new Promise((resolve, rejects) => {
+    fs.readFile(fpath, (err, data) => {
+      if (err) rejects(err);
+      resolve(data);
+    });
+  });
+};
+
+let router = (req, res) => {
+  let params = url.parse(req.url, true);
+  let oriPath = params.pathname == "/" ? "/index.html" : params.pathname;
+  let filePath = __dirname + oriPath;
+
+  let ext = path.extname(oriPath);
+
+  checkFileExits(filePath)
+    .then(readMyFile)
+    .then((data) => {
+      res.writeHead(200, { "": "" });
+      res.end(data);
+    })
+    .catch((err) => {
+      res.writeHead(404, { "": "" });
+      res.end("");
+    });
+};
+
+let server = http.createServer(router);
+
+server.listen(process.env.PORT, () => {
+  console. log(`Server is running at port top${process.env.PORT}`);
+});
+ */
+
+/* let hashData = require("./tutorials/index");
+hashData
+  .encode("123")
+  .then((encoded) => hashData.compare("123", encoded))
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err));
+ */
+
+// // lesson 31 (REPL)
+// /*
+// R = Read
+// E = Evalurate
+// P = Print
+// L = Loop
+
+// const bodyParser = require("body-parser");
+// const { serialize } = require("v8");
+
+// // Get Or Post Leson33
+
+// let http = require("http");
+
+// let start = (req, res) => {
+//   res.writeHead(200, { "Cpntent-Type": "text/html" });
+//   if (req.method == "GET") {
+//     res.end("<h2>Hello GET World!</h2>");
+//   } else {
+//     res.end("<h2>Hello POST World</h2>");
+//   }
+// };
+
+// let server = http.createServer(start);
+
+// server.listen(3000, () => {
+//   console.log("Running!");
+// });
+
+//  */
+
+// lesson 34 Request Path
+
+// let http = require("http");
+
+// let routes = {
+//   GET: () => {
+//     console.log("Get Method");
+//   },
+//   POST: () => {
+//     console.log("Post Method");
+//   },
+// };
+
+// let start = (req, res) => {
+//   let reqMethod = req.method;
+//   console.log(req.url);
+//   // routes[req.method]();
+// };
+
+// let server = http.createServer(start);
+
+// server.listen(3000, () => {
+//   console.log("Server is Running!");
+// });
+
+// let http = require("http");
+// let url = require("url");
+
+/*
+let routes = {
+  GET: {
+    "/": () => console.log("Method GET and Path /"),
+    "/home": () => console.log("Method GET and Path /home"),
+  },
+  POST: {
+    "/": () => console.log("Method Post and Path /"),
+    "/about": () => console.log("Method Post and Path /about"),
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let url = req.url;
+  routes[reqMethod][url]();
+};
+
+let server = http.createServer(start);
+
+server.listen(3000);
+*/
+
+// Lesson 35 Custom Router
+/* 
+let http = require("http");
+let url = require("url");
+
+let routes = {
+  GET: {
+    "/": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Get Method =>/ route</h3>");
+    },
+    "/home": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Get Method =>/home route</h3>");
+    },
+  },
+
+  POST: {
+    "/": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/ route</h3>");
+    },
+    "/about": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/about route</h3>");
+    },
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let urlObj = url.parse(req.url, true); //<= second para is for String
+  routes[reqMethod][urlObj.pathname](req, res);
+};
+
+let server = http.createServer(start);
+server.listen(3000, () => {
+  console.log("Running port 3000!");
+}); */
+
+// lesson 36 Undefined Route Handling (URL path)
+
+/* let http = require("http");
+let url = require("url");
+
+let routes = {
+  GET: {
+    "/": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Get Method =>/ route</h3>");
+    },
+    "/home": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Get Method =>/home route</h3>");
+    },
+  },
+
+  POST: {
+    "/": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/ route</h3>");
+    },
+    "/about": (req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/about route</h3>");
+    },
+  },
+  NA: (req, res) => {
+    res.writeHead(404);
+    res.end("<h1>No Page for that route!</h1>");
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let urlObj = url.parse(req.url, true); //<= second para is for String
+  let resolveRoute = routes[reqMethod][urlObj.pathname];
+  if (resolveRoute != null && resolveRoute != undefined) {
+    resolveRoute(req, res);
+  } else {
+    routes["NA"](req, res);
+  }
+};
+
+let server = http.createServer(start);
+server.listen(3000, () => {
+  console.log("Running port 3000!");
+}); */
+
+// lesson 37 Dot Env Usage
+/* 
+let http = require("http");
+let url = require("url");
+require("dotenv").config();
+
+let routes = {
+  GET: {
+    "/": (req, res, params) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Get Method =>/ route</h3>");
+    },
+    "/home": (req, res, params) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end(
+        `<h3>Get Method =>/home route route with params ${params.query.name} and ${params.query.age}</h3>`
+      );
+    },
+  },
+
+  POST: {
+    "/": (req, res, params) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/ route</h3>");
+    },
+    "/about": (req, res, params) => {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("<h3>Post Method =>/about route</h3>");
+    },
+  },
+  NA: (req, res, params) => {
+    res.writeHead(404);
+    res.end("<h1>No Page for that route!</h1>");
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let params = url.parse(req.url, true); //<= second para is for String
+  let name = params.query.name;
+  let age = params.query.age;
+  console.log("Name :", name, "Age :", age);
+
+  let resolveRoute = routes[reqMethod][params.pathname];
+  if (resolveRoute != null && resolveRoute != undefined) {
+    resolveRoute(req, res, params);
+  } else {
+    routes["NA"](req, res, params);
+  }
+};
+
+let server = http.createServer(start);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Running new server port ${process.env.PORT}!`);
+});
+ */
+// lesson 38 Ghit hub
+
+// Lesson 39 & 40 Getting post UrlEncoded Values and file size
+/* 
+let http = require("http");
+let url = require("url");
+let qsData = require("querystring");
+let fs = require("fs");
+require("dotenv").config();
+
+let responder = (req, res, params) => {
+  res.writeHead(200, { "Content-Type": "Text/html" });
+  res.end(params);
+};
+
+let filePath = (filePath) => {};
+
+let routes = {
+  GET: {
+    "/": (req, res) => {
+      let filepath = __dirname + "/index.html";
+      responder(req, res, filepath);
+    },
+    "/index.html": (req, res) => {
+      let filepath = __dirname + "/index.html";
+      responder(req, res, filepath);
+    },
+    "/about.html": (req, res) => {
+      let filepath = __dirname + "/about.html";
+      responder(req, res, filepath);
+    },
+  },
+
+  POST: {
+    "/": (req, res) => {
+      responder(req, res, `<h3>Post Method =>/ route</h3>`);
+    },
+    "/api/login": (req, res) => {
+      let body = "";
+      req.on("data", (data) => {
+        body += data;
+        if (body.length > 1024) {
+          res.writeHead(403, { "Content-Type": "text/html" });
+          res.end("<h3>File Size over 1GB!</h3>");
+        }
+      });
+      req.on("end", () => {
+        let data = qsData.parse(body);
+        console.log(`Email :${data.email} Password:${data.password}`);
+        res.end();
+      });
+    },
+  },
+  NA: (req, res) => {
+    responder(req, res, `<h1>No Page for that route!</h1>`);
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let params = url.parse(req.url, true); //<= second para is for String
+  // let name = query.name;
+  // let age = query.age;
+  // console.log("Name :", name, "Age :", age);
+
+  let resolveRoute = routes[reqMethod][params.pathname];
+  if (resolveRoute != null && resolveRoute != undefined) {
+    resolveRoute(req, res);
+  } else {
+    routes["NA"](req, res);
+  }
+};
+
+let server = http.createServer(start);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Running new server port ${process.env.PORT}!`);
+}); */
+
+// const express = require("express");
+// const app = express();
+
+// app.listen(3000);
+
+// lesson 41 (Serving html files)
+
+/* let http = require("http");
+let url = require("url");
+let qsData = require("querystring");
+let fs = require("fs");
+require("dotenv").config();
+
+let responder = (req, res, params) => {
+  res.writeHead(200, { "Content-Type": "Text/html" });
+  res.end(params);
+};
+
+let myfileReader = (filePath, res) => {
+  fs.access(filePath, fs.F_OK, (err) => {
+    if (err) {
+      res.writeHead(404, { "Content-type": "text/html" });
+      res.end("<h3>File not found</h3>");
+    } else {
+      fs.readFile(filePath, (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { "Content-type": "text.html" });
+        res.end(data);
+      });
+    }
+  });
+};
+
+let routes = {
+  GET: {
+    "/": (req, res) => {
+      let filepath = __dirname + "/index.html";
+      myfileReader(filepath, res);
+    },
+
+    "/index.html": (req, res) => {
+      let filepath = __dirname + "/index.html";
+      myfileReader(filepath, res);
+    },
+
+    "/about.html": (req, res) => {
+      let filepath = __dirname + "/about.html";
+      myfileReader(filepath, res);
+    },
+  },
+
+  POST: {
+    "/": (req, res) => {
+      responder(req, res, `<h3>Post Method =>/ route</h3>`);
+    },
+    "/api/login": (req, res) => {
+      let body = "";
+      req.on("data", (data) => {
+        body += data;
+        if (body.length > 1024) {
+          res.writeHead(403, { "Content-Type": "text/html" });
+          res.end("<h3>File Size over 1GB!</h3>");
+        }
+      });
+      req.on("end", () => {
+        let data = qsData.parse(body);
+        console.log(`Email :${data.email} Password:${data.password}`);
+        res.end();
+      });
+    },
+  },
+  NA: (req, res) => {
+    responder(req, res, `<h1>No Page for that route!</h1>`);
+  },
+};
+
+let start = (req, res) => {
+  let reqMethod = req.method;
+  let params = url.parse(req.url, true); //<= second para is for String
+  // let name = query.name;
+  // let age = query.age;
+  // console.log("Name :", name, "Age :", age);
+
+  let resolveRoute = routes[reqMethod][params.pathname];
+  if (resolveRoute != null && resolveRoute != undefined) {
+    resolveRoute(req, res);
+  } else {
+    routes["NA"](req, res);
+  }
+};
+
+let server = http.createServer(start);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Running new server port ${process.env.PORT}!`);
+});
+ */
+
+// Lesson 42 (Serving All file type)
+
+/* let http = require("http");
+let url = require("url");
+let qs = require("querystring");
+let fs = require("fs");
+let path = require("path");
+require("dotenv").config();
+
+meme = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/git",
+};
+
+let router = (req, res) => {
+  let params = url.parse(req.url, true);
+  let oriPath = params.pathname == "/" ? "/index.html" : params.pathname;
+  let filepath = __dirname + oriPath;
+
+  let ext = path.extname(oriPath);
+
+  fs.access(filepath, fs.F_OK, (err) => {
+    if (err) {
+      res.writeHead(404, { "Content-type": "text/html" });
+      res.end("<h2>File not found!</h2>");
+    } else {
+      fs.readFile(filepath, (err, data) => {
+        if (err) {
+          res.writeHead(403, { "Content-type": "text/html" });
+          res.end("<h2>File Read Error</h2>");
+        } else {
+          res.writeHead(200, { "Content-type": meme[ext] });
+          res.end(data);
+        }
+      });
+    }
+  });
+};
+
+let server = http.createServer(router);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server is running at Port ${process.env.PORT}`);
+}); */
+
+// Lesson 43 (File  Read_Promise) & (image file and html)
+
+/* let http = require("http");
+let url = require("url");
+let qs = require("querystring");
+let fs = require("fs");
+let path = require("path");
+const { resolve } = require("path");
+const { rejects } = require("assert");
+require("dotenv").config();
+
+meme = {
+  ".html": "text/html",
+  ".css": "text/css",
+  ".js": "text/javascript",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".gif": "image/git",
+};
+
+let checkFileExits = (filepath) => {
+  return new Promise((resolve, rejects) => {
+    fs.access(filepath, fs.F_OK, (err) => {
+      if (err) rejects(err);
+      resolve(filepath);
+    });
+  });
+};
+
+let readMyFile = (filepath) => {
+  return new Promise((resolve, rejects) => {
+    fs.readFile(filepath, (err, data) => {
+      if (err) rejects(err);
+      resolve(data);
+    });
+  });
+};
+
+let router = (req, res) => {
+  let params = url.parse(req.url, true);
+  let oriPath = params.pathname == "/" ? "/index.html" : params.pathname;
+  let filepath = __dirname + oriPath;
+
+  let ext = path.extname(oriPath);
+
+  checkFileExits(filepath)
+    .then(readMyFile)
+    .then((data) => {
+      res.writeHead(200, { "Content-type": "text/html" });
+      res.end(data);
+    })
+    .catch((err) => {
+      res.writeHead(404, { "Content-type": "text/html" });
+      res.end("<h2>File not found</h2>");
+    });
+};
+
+let server = http.createServer(router);
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server is running at Port ${process.env.PORT}`);
+});
+ */
+
+// Lesson 44 (process env Args(Argument) & Argv (Argument vector)) (env = everoment variable)
+
+// Lesson 45
+// qr-image npm (nodemodules) (Generate for images)
+/* 
+let qr = require("qr-image");
+
+let encodeString = process.argv[2];
+let outputImage = process.argv[3];
+
+qr.image(encodeString, { type: "png", size: 30 }).pipe(
+  require("fs").createWriteStream(outputImage)
+);
+ */
+
+// lesson 46
+
+/*
+let testTutor ial = require("./tutorials/index");
+   
+console.log(testTutorial.hello("Kyaw tun win"));
+ */
+
+// lesson 47 Password encode decode (npm i bcrypt (Module for ))
+
+// ********Lesson 48 Express serving html file ( One of the most popular Framework ) *********
+/* 
+require("dotenv").config();
+
+let express = require("express"),
+  app = express(),
+  path = require("path");
+
+app.use(express.static(path.join("assets")));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
+app.get("/index", (req, res) => {
+  res.sendFile(__dirnarme + "/index.html");
+});
+app.get("/about", (req, res) => {
+  res.sendFile(__dirname + "/about.html");
+});
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running at port ${process.env.PORT}`);
+});
+ */
+
+// lesson 49 Resquest Body Parameters
+
+/* require("dotenv").config();
+
+let bodyParsa = require("body-parser");
+let express = require("express"),
+  app = express(),
+  path = require("path");
+
+app.use(bodayParser.json());
+app.use(bodayParser.urlencoded({ extended: true }));
+
+// Check and accept params Data
+
+app.get("/api/post/:id", (req, res) => {
+  let id = req.params.id;
+  res.send(`Param id is ${id}`);
+});
+
+// Check with Query params (Query params = ? )
+
+app.get("/api/user", (req, res) => {
+  let name = req.query.name;
+  let password = req.query.password;
+  res.send(`Name ${name} and Password ${password}`);
+});
+
+// body-parser (module for catch email & password )
+app.post("/api/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  res.send(`Email : ${email} & Password : ${password}`);
+});
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running at Port ${process.env.PORT}`);
+});
+ */
+// lesson 50 hogan express (Hogan is alway looking view folder in projects) Image not running in real work
+
+/* require("dotenv").config();
+
+let bodyParsa = require("body-parser");
+let express = require("express"),
+  app = express(),
+  path = require("path"),
+  hogan = require("hogan-express");
+
+app.use(bodyParsa.json());
+app.use(bodyParsa.urlencoded({ extended: true }));
+
+app.engine("html", hogan);
+app.set("view engine", "html");
+
+// Check and accept params Data
+
+app.get("/api/post/:id", (req, res) => {
+  let id = req.params.id;
+  res.send(`Param id is ${id}`);
+});
+
+// Check with Query params (Query params = ? )
+
+app.get("/api/user", (req, res) => {
+  let name = req.query.name;
+  let password = req.query.password;
+  res.send(`Name ${name} and Password ${password}`);
+});
+
+// body-parser (module for catch email & password )
+app.post("/api/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  res.send(`Email : ${email} & Password : ${password}`);
+});
+
+app.use(express.static(path.join(__dirname, "assets")));
+
+app.get("/", (req, res) => {
+  res.render("index");
+});
+
+app.get("/index", (req, res) => {
+  res.render("index");
+});
+app.get("/about", (req, res) => {
+  res.render("about");
+});
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running at Port ${process.env.PORT}`);
+});
+ */
+// Lesson 51 WSS => ( Web Socket Secure ) Connection for server and client
+
+require("dotenv").config();
+let express = require("express"),
+  app = express(),
+  server = require("http").createServer(app),
+  io = require("socket.io").listen(server);
+
+// app.engine("html", hogan);
+// app.set("view engine", "html");
+// app.use(express.static(path.join(__dirname, "assets")));
+
+// app.get("/", (req, res) => {
+//   res.render("index");
+// });
+
+server.listen(process.env.PORT, () => {
+  console.log(`Server running at client Port ${process.env.PORT}`);
+});
